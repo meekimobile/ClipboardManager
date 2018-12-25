@@ -13,6 +13,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool result = false;
+  String _pastedContent = '';
 
   @override
   void initState() {
@@ -35,7 +36,8 @@ class _MyAppState extends State<MyApp> {
                   RaisedButton(
                     child: Text('Copy to Clipboard'),
                     onPressed: () {
-                      ClipboardManager.copyToClipBoard("xYZ1234AB").then((result) {
+                      ClipboardManager.copyToClipBoard("xYZ1234AB")
+                          .then((result) {
                         final snackBar = SnackBar(
                           content: Text('Copied to Clipboard'),
                           action: SnackBarAction(
@@ -44,6 +46,17 @@ class _MyAppState extends State<MyApp> {
                           ),
                         );
                         Scaffold.of(context).showSnackBar(snackBar);
+                      });
+                    },
+                  ),
+                  Text(_pastedContent),
+                  RaisedButton(
+                    child: Text('Paste from Clipboard'),
+                    onPressed: () {
+                      ClipboardManager.pasteFromClipBoard().then((result) {
+                        setState(() {
+                          _pastedContent = result;
+                        });
                       });
                     },
                   )
