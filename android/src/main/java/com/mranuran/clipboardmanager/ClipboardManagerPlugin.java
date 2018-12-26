@@ -65,7 +65,7 @@ public class ClipboardManagerPlugin implements MethodCallHandler {
 		if (call.method.equals("copyToClipBoard")) {
 			String contentType = call.argument("contentType");
 			if (contentType == null) {
-				result.error("no_data", "No data.", null);
+				result.error("invalid_content_type", "Invalid content type.", null);
 				return;
 			}
 
