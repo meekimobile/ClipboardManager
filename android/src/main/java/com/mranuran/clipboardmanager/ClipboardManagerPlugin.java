@@ -3,12 +3,14 @@ package com.mranuran.clipboardmanager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
@@ -153,24 +155,25 @@ public class ClipboardManagerPlugin implements MethodCallHandler {
         return fileExtMap.get(contentType);
     }
 
-	private Uri saveBinaryFile(byte[] data, String contentType) {
-		try {
-			// TODO: Save to image file, then create Uri with FileProvider.
-			String fileExtension = contentType2FileExt(contentType);
-			File homeDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "ClipboardAnywhere");
-			homeDir.mkdirs();
-			File imageFile = new File(homeDir, String.format(Locale.getDefault(), "ClipboardAnywhere-%d.%s", new Date().getTime(), fileExtension));
-			FileOutputStream fos = new FileOutputStream(imageFile);
-			// TODO: Async writing.
-			fos.write(data, 0, data.length);
-			fos.close();
-			Uri dataUri = Uri.fromFile(imageFile);
+    private Uri saveBinaryFile(byte[] data, String contentType) {
+        try {
+            String fileExtension = contentType2FileExt(contentType);
+            File imagePath = new File(getContext().getFilesDir(), "images");
+            imagePath.mkdirs();
+            File imageFile = new File(imagePath,
+                    String.format(Locale.getDefault(), "%d.%s", new Date().getTime(), fileExtension));
+            FileOutputStream fos = new FileOutputStream(imageFile);
+            // TODO: Async writing.
+            fos.write(data, 0, data.length);
+            fos.close();
+            Uri dataUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileProvider", imageFile);
+            getContext().grantUriPermission(getContext().getPackageName(), dataUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-			return dataUri;
+            return dataUri;
 
-		} catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "saveBinaryFile", e);
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

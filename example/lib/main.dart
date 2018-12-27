@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
                   RaisedButton(
                     child: Text('Copy to Clipboard'),
                     onPressed: () {
-                      ClipboardManager.copyToClipBoard("xYZ1234AB")
+                      ClipboardManager.copyToClipBoard("xYZ1234AB", "text/plain")
                           .then((result) {
                         final snackBar = SnackBar(
                           content: Text('Copied to Clipboard'),
