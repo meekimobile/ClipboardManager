@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:clipboard_manager/clipboard_manager.dart';
 
 void main() => runApp(MyApp());
@@ -32,34 +32,29 @@ class _MyAppState extends State<MyApp> {
             return Center(
               child: Column(
                 children: <Widget>[
+                  Spacer(flex: 1,),
                   Text('Your coupon is xYZ1234AB'),
                   RaisedButton(
                     child: Text('Copy to Clipboard'),
                     onPressed: () {
-                      ClipboardManager.copyToClipBoard("xYZ1234AB", "text/plain")
-                          .then((result) {
-                        final snackBar = SnackBar(
-                          content: Text('Copied to Clipboard'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {},
-                          ),
-                        );
-                        Scaffold.of(context).showSnackBar(snackBar);
-                      });
+                      _copyTextToClipboard(context);
                     },
                   ),
+                  RaisedButton(
+                    child: Text('Copy Image to Clipboard'),
+                    onPressed: () {
+                      _copyImageToClipboard(context);
+                    },
+                  ),
+                  Spacer(flex: 1,),
                   Text(_pastedContent),
                   RaisedButton(
                     child: Text('Paste from Clipboard'),
                     onPressed: () {
-                      ClipboardManager.pasteFromClipBoard().then((result) {
-                        setState(() {
-                          _pastedContent = result;
-                        });
-                      });
+                      _pasteFromClipboard();
                     },
-                  )
+                  ),
+                  Spacer(flex: 1,),
                 ],
               ),
             );
@@ -67,5 +62,42 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  void _pasteFromClipboard() {
+    ClipboardManager.pasteFromClipBoard().then((result) {
+      setState(() {
+        _pastedContent = result["contentType"];
+      });
+    });
+  }
+
+  void _copyTextToClipboard(BuildContext context) {
+    ClipboardManager.copyToClipBoard(
+            "xYZ1234AB", "text/plain")
+        .then((result) {
+      final snackBar = SnackBar(
+        content: Text('Copied to Clipboard'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {},
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
+  }
+
+  void _copyImageToClipboard(BuildContext context) async {
+    ByteData byteData = await rootBundle.load('images/sample.jpg');
+    ClipboardManager.copyToClipBoard(byteData.buffer.asUint8List(), "image/jpeg").then((result) {
+      final snackBar = SnackBar(
+        content: Text('Copied sample image to Clipboard'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {},
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
   }
 }
