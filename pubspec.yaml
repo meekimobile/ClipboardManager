@@ -1,8 +1,8 @@
 name: clipboard_manager
 description: A flutter plugin to copy text to clipboard.
 version: 0.0.3
-author: Anuran Barman <anuranbarman@gmail.com>
-homepage: https://github.com/anuranBarman/ClipboardManager
+author: Taweesak Kittipuree <meekimobile@gmail.com>
+homepage: https://github.com/meekimobile/ClipboardManager
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -17,7 +17,7 @@ dependencies:
 # The following section is specific to Flutter.
 flutter:
   plugin:
-    androidPackage: com.mranuran.clipboardmanager
+    androidPackage: mobi.meeki.clipboardmanager
     pluginClass: ClipboardManagerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
